@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dushann | Electronics Store</title>
+  <style>
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:#f3f4f6;
+      color:#111827;
+    }
+    header{
+      background:#0f172a;
+      color:#fff;
+      padding:25px;
+      text-align:center;
+    }
+    header h1{margin:0;font-size:2.4rem;}
+    header p{margin-top:8px;color:#c7d2fe;}
+
+    section{
+      max-width:1200px;
+      margin:40px auto;
+      padding:0 20px;
+    }
+    h2{
+      text-align:center;
+      margin-bottom:30px;
+      color:#0f172a;
+    }
+
+    .products{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+      gap:25px;
+    }
+    .card{
+      background:#fff;
+      padding:20px;
+      border-radius:14px;
+      box-shadow:0 10px 22px rgba(0,0,0,0.12);
+      transition:transform .3s, box-shadow .3s;
+    }
+    .card:hover{
+      transform:translateY(-6px);
+      box-shadow:0 18px 35px rgba(0,0,0,0.18);
+    }
+    .card h3{margin-top:0;color:#2563eb;}
+    .price{font-weight:bold;color:#16a34a;margin:10px 0;}
+    button{
+      background:#2563eb;
+      color:#fff;
+      border:none;
+      padding:10px 15px;
+      border-radius:8px;
+      cursor:pointer;
+      width:100%;
+    }
+    button:hover{background:#1e40af;}
+
+    .service{
+      background:#e0e7ff;
+      padding:30px;
+      border-radius:16px;
+      margin-top:50px;
+      text-align:center;
+    }
+
+    footer{
+      text-align:center;
+      padding:15px;
+      background:#0f172a;
+      color:#d1d5db;
+      margin-top:40px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Dushann</h1>
+  <p>Budget-Friendly Electronics • Trusted Worldwide</p>
+</header>
+
+<section>
+  <h2>Featured Electronics Products</h2>
+  <div class="products">
+
+    <div class="card">
+      <h3>Wireless Earbuds</h3>
+      <p>Clear sound, long battery life, compact design.</p>
+      <p class="price">₹1,499</p>
+      <button>Add to Cart</button>
+    </div>
+
+    <div class="card">
+      <h3>Smart Watch</h3>
+      <p>Fitness tracking, heart rate & notifications.</p>
+      <p class="price">₹2,999</p>
+      <button>Add to Cart</button>
+    </div>
+
+    <div class="card">
+      <h3>Bluetooth Speaker</h3>
+      <p>Portable speaker with powerful bass.</p>
+      <p class="price">₹1,299</p>
+      <button>Add to Cart</button>
+    </div>
+
+    <div class="card">
+      <h3>Wireless Mouse</h3>
+      <p>Smooth tracking and ergonomic design.</p>
+      <p class="price">₹499</p>
+      <button>Add to Cart</button>
+    </div>
+
+    <div class="card">
+      <h3>USB Fast Charger</h3>
+      <p>Quick charge support for all devices.</p>
+      <p class="price">₹699</p>
+      <button>Add to Cart</button>
+    </div>
+
+    <div class="card">
+      <h3>Power Bank</h3>
