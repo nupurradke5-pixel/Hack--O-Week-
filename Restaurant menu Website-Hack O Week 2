@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Desi Gaav Ka Tadka | Village Food</title>
+  <style>
+    body{
+      margin:0;
+      font-family:Segoe UI, Tahoma, sans-serif;
+      background:linear-gradient(180deg,#0f172a,#020617);
+      color:#f9fafb;
+    }
+    header{
+      text-align:center;
+      padding:60px 20px;
+      background:linear-gradient(135deg,#92400e,#78350f);
+    }
+    header h1{font-size:3rem;margin:0;letter-spacing:2px;}
+    header p{margin-top:10px;font-size:1.2rem;color:#fde68a;}
+    section{max-width:1200px;margin:60px auto;padding:0 20px;}
+    h2{text-align:center;color:#facc15;font-size:2.2rem;margin-bottom:40px;}
+    .menu{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:30px;
+    }
+    .card{
+      background:rgba(17,24,39,0.95);
+      padding:25px;
+      border-radius:22px;
+      box-shadow:0 25px 50px rgba(0,0,0,0.6);
+      transform-style:preserve-3d;
+      transition:transform .6s, box-shadow .6s;
+      text-align:center;
+    }
+    .card:hover{
+      transform:rotateY(18deg) rotateX(8deg) scale(1.06);
+      box-shadow:0 40px 70px rgba(0,0,0,0.9);
+    }
+    .card h3{color:#fde68a;margin-bottom:8px;}
+    .price{color:#86efac;font-weight:bold;font-size:1.1rem;}
+    .info{
+      text-align:center;
+      background:rgba(17,24,39,0.85);
+      padding:40px 20px;
+      border-radius:22px;
+      box-shadow:0 25px 50px rgba(0,0,0,0.6);
+      font-size:1.15rem;
+    }
+    footer{text-align:center;padding:20px;background:#020617;color:#9ca3af;}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Desi Gaav Ka Tadka</h1>
+  <p>Pure Village Taste • Night Special Dhaba</p>
+</header>
+
+<section>
+  <h2>🌾 Village Special Menu 🌾</h2>
+  <div class="menu">
+
+    <div class="card">
+      <h3>Makki ki Roti & Sarson ka Saag</h3>
+      <p>Traditional Punjabi gaav combo</p>
+      <p class="price">₹120</p>
+    </div>
+
+    <div class="card">
+      <h3>Makki ki Roti & Sarson ka Saag</h3>
+      <p>Traditional Punjabi gaav combo</p>
+      <p class="price">₹120</p>
+    </div>
+
+    <div class="card">
+      <h3>Makki ki Roti & Sarson ka Saag</h3>
+      <p>Traditional Punjabi gaav combo</p>
+      <p class="price">₹120</p>
+    </div>
+
+    <div class="card">
+      <h3>Makki ki Roti & Sarson ka Saag</h3>
+      <p>Traditional Punjabi gaav combo</p>
+      <p class="price">₹120</p>
+    </div>
+
+    <div class="card">
+      <h3>Makki ki Roti & Sarson ka Saag</h3>
+      <p>Traditional Punjabi gaav combo</p>
+      <p class="price">₹120</p>
+    </div>
+
+    <div class="card">
+      <h3>Makki ki Roti & Sarson ka Saag</h3>
+      <p>Traditional Punjabi gaav combo</p>
+      <p class="price">₹120</p>
+    </div>
+
+  </div>
+</section>
+
+<section class="info">
+  <p>🕖 <strong>Food Timing:</strong> Night 7:00 PM – 12:00 AM</p>
+  <p>📍 <strong>Location:</strong> Navi Mumbai</p>
+  <p>🌙 Reasonable budget • Authentic village taste</p>
+</section>
+
+<footer>
+  <p>© 2026 Desi Gaav Ka Tadka | Taste of the Village</p>
+</footer>
+
+</body>
+</html>
