@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nupur Radke | Portfolio</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f6f8;
+            color: #333;
+        }
+        header {
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        header p {
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+        section {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        h2 {
+            color: #4f46e5;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+        .card {
+            background: #fff;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        ul {
+            padding-left: 20px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #111827;
+            color: #d1d5db;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Nupur Radke</h1>
+        <p>Computer Science Engineering Student</p>
+    </header>
+
+    <section>
+        <h2>About Me</h2>
+        <div class="card">
+            <p>
+                Hello! I am <strong>Nupur Radke</strong>, a Computer Science Engineering student with a strong interest in programming, problem-solving, and emerging technologies. I enjoy learning new concepts and applying them through practical projects.
+            </p>
+        </div>
+    </section>
+
+    <section>
+        <h2>Skills</h2>
+        <div class="card">
+            <ul>
+                <li>C Programming</li>
+                <li>Data Structures & Basics of Algorithms</li>
+                <li>HTML & CSS</li>
+                <li>Basic JavaScript</li>
+                <li>Problem Solving</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <h2>Projects</h2>
+        <div class="card">
+            <ul>
+                <li>Student Registration Form using HTML & CSS</li>
+                <li>ATM Mini Menu Program in C</li>
+                <li>Shopping Discount Calculator (C Program)</li>
+            </ul>
+        </div>
+    </section>
+
+    <section>
+        <h2>Education</h2>
+        <div class="card">
+            <p>
+                <strong>Bachelor of Technology (B.Tech)</strong><br>
+                Computer Science Engineering
+            </p>
+            <hr>
+            <p>
+                <strong>12th Standard (PCM)</strong><br>
+                Physics, Chemistry, Mathematics
+            </p>
+            <hr>
+            <p>
+                <strong>10th Standard (PCM)</strong><br>
+                Physics, Chemistry, Mathematics
+            </p>
+        </div>
+    </section>
+
+    <section>
+        <h2>Contact</h2>
+        <div class="card">
+            <p>
+                <strong>Email:</strong> nupurradke5@gmail.com<br>
+                <strong>LinkedIn:</strong> Nupur Radke<br>
+                <strong>GitHub:</strong> nupurradke5@gmail.com
+            </p>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 Nupur Radke | Personal Portfolio</p>
+    </footer>
+
+</body>
+</html>
