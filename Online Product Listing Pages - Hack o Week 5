@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nupur Radke | Travel Blog</title>
+  <style>
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:#f9fafb;
+      color:#111827;
+    }
+    header{
+      background:#1f2937;
+      color:#fff;
+      padding:30px 20px;
+      text-align:center;
+    }
+    nav{
+      background:#111827;
+      padding:12px;
+      text-align:center;
+    }
+    nav a{
+      color:#e5e7eb;
+      margin:0 15px;
+      text-decoration:none;
+      font-weight:bold;
+    }
+    nav a:hover{color:#38bdf8;}
+
+    section{
+      max-width:900px;
+      margin:40px auto;
+      padding:0 20px;
+    }
+    h2{color:#1f2937;}
+    .post{
+      background:#fff;
+      padding:25px;
+      border-radius:12px;
+      box-shadow:0 8px 18px rgba(0,0,0,0.1);
+      margin-bottom:30px;
+    }
+    footer{
+      background:#1f2937;
+      color:#d1d5db;
+      text-align:center;
+      padding:15px;
+      margin-top:40px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Nupur Radke</h1>
+  <p>All India Traveller | Travel Stories & Experiences</p>
+</header>
+
+<nav>
+  <a href="#home">Home</a>
+  <a href="#trips">Trips</a>
+  <a href="#about">About</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<section id="home">
+  <h2>Welcome</h2>
+  <p>Welcome to my travel blog! I am <strong>Nupur Radke</strong>, an all‑India traveller who loves exploring new places, cultures, and food. Here I share my personal travel experiences and memories.</p>
+</section>
+
+<section id="trips">
+  <h2>My Travel Stories</h2>
+
+  <div class="post">
+    <h3>Trip 1: Exploring Goa</h3>
+    <p>Goa was a perfect blend of beaches, sunsets, and local food. I explored famous beaches, enjoyed water sports, and experienced the vibrant nightlife.</p>
+  </div>
+
+  <div class="post">
+    <h3>Trip 2: Journey to Manali</h3>
+    <p>Manali was calm and refreshing. Surrounded by mountains and snow, this trip gave me peace and beautiful memories of nature.</p>
+  </div>
+
+  <div class="post">
+    <h3>Trip 3: Spiritual Visit to Varanasi</h3>
+    <p>Varanasi was a deeply spiritual experience. Watching the Ganga Aarti and exploring old streets made this trip unforgettable.</p>
+  </div>
+
+</section>
+
+<section id="about">
+  <h2>About Me</h2>
+  <p>I am an all‑India traveller passionate about discovering India’s diversity. Travelling helps me learn, grow, and connect with people.</p>
+</section>
+
+<section id="contact">
+  <h2>Contact</h2>
+  <p><strong>Email:</strong> nupurradke5@gmail.com</p>
+  <p><strong>Contact Number:</strong> 7498215252</p>
+</section>
+
+<footer>
+  <p>© 2026 Nupur Radke | Travel Blog</p>
+</footer>
+
+</body>
+</html>
