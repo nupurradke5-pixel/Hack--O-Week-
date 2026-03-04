@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regression Analysis Quiz</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Outfit', sans-serif; }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0d1b2a 50%, #1b263b 100%);
+    }
+    
+    .card-glass {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .option-btn {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .option-btn:hover:not(.selected):not(.correct):not(.incorrect) {
+      transform: translateX(8px);
+      background: rgba(99, 179, 237, 0.15);
+      border-color: rgba(99, 179, 237, 0.5);
+    }
+    
+    .option-btn.selected {
+      background: rgba(99, 179, 237, 0.2);
+      border-color: #63b3ed;
+      box-shadow: 0 0 20px rgba(99, 179, 237, 0.3);
+    }
+    
+    .option-btn.correct {
+      background: rgba(72, 187, 120, 0.2);
+      border-color: #48bb78;
+      box-shadow: 0 0 20px rgba(72, 187, 120, 0.3);
+    }
+    
+    .option-btn.incorrect {
+      background: rgba(245, 101, 101, 0.2);
+      border-color: #f56565;
+      box-shadow: 0 0 20px rgba(245, 101, 101, 0.3);
+    }
+    
+    .progress-fill {
+      transition: width 0.5s ease-out;
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .pulse-glow {
+      animation: pulseGlow 2s infinite;
+    }
+    
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(99, 179, 237, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(99, 179, 237, 0.6); }
+    }
+    
+    .score-ring {
+      stroke-dasharray: 283;
+      stroke-dashoffset: 283;
+      transition: stroke-dashoffset 1s ease-out;
+    }
+    
+    .floating {
+      animation: floating 3s ease-in-out infinite;
+    }
+    
+    @keyframes floating {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full">
+  <div id="app-wrapper" class="gradient-bg w-full h-full overflow-auto">
+   <div class="min-h-full w-full flex flex-col items-center justify-center p-6"><!-- Start Screen -->
+    <div id="start-screen" class="w-full max-w-2xl text-center fade-in">
+     <div class="floating mb-8">
+      <svg class="w-24 h-24 mx-auto text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </svg>
+     </div>
+     <h1 id="quiz-title" class="text-4xl md:text-5xl font-bold text-white mb-4">Regression Analysis Quiz</h1>
+     <p id="quiz-subtitle" class="text-blue-300 text-lg mb-8">Test your knowledge of statistical regression concepts</p>
+     <div class="card-glass rounded-2xl p-6 mb-8">
+      <div class="flex items-center justify-center gap-8 text-white/80">
+       <div class="flex items-center gap-2">
+        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg><span>5 Questions</span>
+       </div>
+       <div class="flex items-center gap-2">
+        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg><span>No time limit</span>
+       </div>
+      </div>
+     </div><button onclick="startQuiz()" class="px-10 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-xl text-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 hover:scale-105 pulse-glow"> Start Quiz </button>
+    </div><!-- Quiz Screen -->
+    <div id="quiz-screen" class="w-full max-w-2xl hidden"><!-- Progress Bar -->
+     <div class="mb-8">
+      <div class="flex justify-between text-white/70 text-sm mb-2"><span>Question <span id="current-q">1</span> of 5</span> <span id="score-display">Score: 0</span>
+      </div>
+      <div class="h-2 bg-white/10 rounded-full overflow-hidden">
+       <div id="progress-bar" class="h-full bg-gradient-to-r from-blue-500 to-cyan-500 progress-fill" style="width: 20%"></div>
+      </div>
+     </div><!-- Question Card -->
+     <div class="card-glass rounded-2xl p-8 fade-in">
+      <div class="flex items-start gap-4 mb-6"><span class="flex-shrink-0 w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-400 font-bold" id="q-number">1</span>
+       <h2 id="question-text" class="text-xl md:text-2xl text-white font-medium leading-relaxed"></h2>
+      </div>
+      <div id="options-container" class="space-y-3 mb-6"><!-- Options will be inserted here -->
+      </div>
+      <div id="feedback" class="hidden mb-6 p-4 rounded-xl text-center">
+       <p id="feedback-text" class="font-medium"></p>
+      </div>
+      <div class="flex justify-end"><button id="next-btn" onclick="nextQuestion()" class="hidden px-8 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 hover:scale-105"> Next Question → </button>
+      </div>
+     </div>
+    </div><!-- Results Screen -->
+    <div id="results-screen" class="w-full max-w-2xl text-center hidden fade-in">
+     <div class="card-glass rounded-2xl p-8">
+      <div class="relative w-40 h-40 mx-auto mb-6">
+       <svg class="w-full h-full -rotate-90" viewbox="0 0 100 100"><circle cx="50" cy="50" r="45" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="none" /> <circle id="score-ring" class="score-ring" cx="50" cy="50" r="45" stroke="url(#gradient)" stroke-width="8" fill="none" stroke-linecap="round" /> <defs>
+         <lineargradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#3b82f6" />
+          <stop offset="100%" stop-color="#06b6d4" />
+         </lineargradient>
+        </defs>
+       </svg>
+       <div class="absolute inset-0 flex items-center justify-center"><span id="final-score" class="text-4xl font-bold text-white">0%</span>
+       </div>
+      </div>
+      <h2 id="result-title" class="text-3xl font-bold text-white mb-2">Quiz Complete!</h2>
+      <p id="result-message" class="text-blue-300 mb-6"></p>
+      <div class="grid grid-cols-2 gap-4 mb-8">
+       <div class="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
+        <p class="text-green-400 text-2xl font-bold" id="correct-count">0</p>
+        <p class="text-white/60 text-sm">Correct</p>
+       </div>
+       <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+        <p class="text-red-400 text-2xl font-bold" id="incorrect-count">0</p>
+        <p class="text-white/60 text-sm">Incorrect</p>
+       </div>
+      </div><button onclick="restartQuiz()" class="px-10 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-xl text-lg hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 hover:scale-105"> Try Again </button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    const quizData = [
+      {
+        question: "In simple linear regression, what does the coefficient of determination (R²) represent?",
+        options: [
+          "The slope of the regression line",
+          "The proportion of variance in the dependent variable explained by the independent variable",
+          "The y-intercept of the regression line",
+          "The standard error of the estimate"
+        ],
+        correct: 1
+      },
+      {
+        question: "What is the purpose of the least squares method in regression analysis?",
+        options: [
+          "To maximize the sum of squared residuals",
+          "To find the mean of all data points",
+          "To minimize the sum of squared differences between observed and predicted values",
+          "To calculate the correlation coefficient"
+        ],
+        correct: 2
+      },
+      {
+        question: "In the regression equation ŷ = a + bx, what does 'b' represent?",
+        options: [
+          "The y-intercept",
+          "The predicted value of y",
+          "The slope (change in y for each unit change in x)",
+          "The residual error"
+        ],
+        correct: 2
+      },
+      {
+        question: "What assumption is NOT required for ordinary least squares (OLS) regression?",
+        options: [
+          "Linearity between dependent and independent variables",
+          "Homoscedasticity (constant variance of residuals)",
+          "The dependent variable must be normally distributed",
+          "Independence of residuals"
+        ],
+        correct: 2
+      },
+      {
+        question: "What does a residual represent in regression analysis?",
+        options: [
+          "The predicted value of the dependent variable",
+          "The difference between observed and predicted values",
+          "The average of all y-values",
+          "The correlation between variables"
+        ],
+        correct: 1
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let answered = false;
+
+    const defaultConfig = {
+      quiz_title: "Regression Analysis Quiz",
+      quiz_subtitle: "Test your knowledge of statistical regression concepts",
+      background_color: "#0d1b2a",
+      accent_color: "#3b82f6",
+      text_color: "#ffffff",
+      font_family: "Outfit",
+      font_size: 16
+    };
+
+    let config = { ...defaultConfig };
+
+    async function onConfigChange(cfg) {
+      const title = cfg.quiz_title || defaultConfig.quiz_title;
+      const subtitle = cfg.quiz_subtitle || defaultConfig.quiz_subtitle;
+      const bgColor = cfg.background_color || defaultConfig.background_color;
+      const accentColor = cfg.accent_color || defaultConfig.accent_color;
+      const textColor = cfg.text_color || defaultConfig.text_color;
+      const fontFamily = cfg.font_family || defaultConfig.font_family;
+      const fontSize = cfg.font_size || defaultConfig.font_size;
+
+      document.getElementById('quiz-title').textContent = title;
+      document.getElementById('quiz-subtitle').textContent = subtitle;
+      
+      document.getElementById('app-wrapper').style.background = `linear-gradient(135deg, ${bgColor} 0%, ${adjustColor(bgColor, -20)} 50%, ${adjustColor(bgColor, -10)} 100%)`;
+      
+      document.body.style.fontFamily = `${fontFamily}, sans-serif`;
+      document.body.style.fontSize = `${fontSize}px`;
+    }
+
+    function adjustColor(hex, percent) {
+      const num = parseInt(hex.replace('#', ''), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = Math.max(0, Math.min(255, (num >> 16) + amt));
+      const G = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amt));
+      const B = Math.max(0, Math.min(255, (num & 0x0000FF) + amt));
+      return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+    }
+
+    function mapToCapabilities(cfg) {
+      return {
+        recolorables: [
+          {
+            get: () => cfg.background_color || defaultConfig.background_color,
+            set: (value) => { cfg.background_color = value; window.elementSdk.setConfig({ background_color: value }); }
+          },
+          {
+            get: () => cfg.accent_color || defaultConfig.accent_color,
+            set: (value) => { cfg.accent_color = value; window.elementSdk.setConfig({ accent_color: value }); }
+          },
+          {
+            get: () => cfg.text_color || defaultConfig.text_color,
+            set: (value) => { cfg.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => cfg.font_family || defaultConfig.font_family,
+          set: (value) => { cfg.font_family = value; window.elementSdk.setConfig({ font_family: value }); }
+        },
+        fontSizeable: {
+          get: () => cfg.font_size || defaultConfig.font_size,
+          set: (value) => { cfg.font_size = value; window.elementSdk.setConfig({ font_size: value }); }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(cfg) {
+      return new Map([
+        ["quiz_title", cfg.quiz_title || defaultConfig.quiz_title],
+        ["quiz_subtitle", cfg.quiz_subtitle || defaultConfig.quiz_subtitle]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+      config = window.elementSdk.config || config;
+    }
+
+    function startQuiz() {
+      document.getElementById('start-screen').classList.add('hidden');
+      document.getElementById('quiz-screen').classList.remove('hidden');
+      showQuestion();
+    }
+
+    function showQuestion() {
+      answered = false;
+      const q = quizData[currentQuestion];
+      
+      document.getElementById('current-q').textContent = currentQuestion + 1;
+      document.getElementById('q-number').textContent = currentQuestion + 1;
+      document.getElementById('question-text').textContent = q.question;
+      document.getElementById('progress-bar').style.width = `${((currentQuestion + 1) / quizData.length) * 100}%`;
+      
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+      
+      q.options.forEach((option, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn w-full text-left p-4 rounded-xl border border-white/10 text-white/90 hover:text-white transition-all duration-300';
+        btn.innerHTML = `
+          <span class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-sm font-medium">${String.fromCharCode(65 + index)}</span>
+            <span>${option}</span>
+          </span>
+        `;
+        btn.onclick = () => selectAnswer(index, btn);
+        optionsContainer.appendChild(btn);
+      });
+
+      document.getElementById('feedback').classList.add('hidden');
+      document.getElementById('next-btn').classList.add('hidden');
+    }
+
+    function selectAnswer(index, btn) {
+      if (answered) return;
+      answered = true;
+
+      const q = quizData[currentQuestion];
+      const buttons = document.querySelectorAll('.option-btn');
+      
+      buttons.forEach((b, i) => {
+        b.classList.remove('selected');
+        if (i === q.correct) {
+          b.classList.add('correct');
+        } else if (i === index && index !== q.correct) {
+          b.classList.add('incorrect');
+        }
+      });
+
+      const feedback = document.getElementById('feedback');
+      const feedbackText = document.getElementById('feedback-text');
+      
+      if (index === q.correct) {
+        score++;
+        feedback.className = 'mb-6 p-4 rounded-xl text-center bg-green-500/10 border border-green-500/30';
+        feedbackText.className = 'font-medium text-green-400';
+        feedbackText.textContent = '✓ Correct! Well done!';
+      } else {
+        feedback.className = 'mb-6 p-4 rounded-xl text-center bg-red-500/10 border border-red-500/30';
+        feedbackText.className = 'font-medium text-red-400';
+        feedbackText.textContent = `✗ Incorrect. The correct answer is ${String.fromCharCode(65 + q.correct)}.`;
+      }
+      
+      feedback.classList.remove('hidden');
+      document.getElementById('score-display').textContent = `Score: ${score}`;
+      
+      const nextBtn = document.getElementById('next-btn');
+      nextBtn.classList.remove('hidden');
+      nextBtn.textContent = currentQuestion === quizData.length - 1 ? 'See Results →' : 'Next Question →';
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      
+      if (currentQuestion >= quizData.length) {
+        showResults();
+      } else {
+        const quizScreen = document.getElementById('quiz-screen');
+        quizScreen.querySelector('.card-glass').classList.remove('fade-in');
+        setTimeout(() => {
+          quizScreen.querySelector('.card-glass').classList.add('fade-in');
+          showQuestion();
+        }, 50);
+      }
+    }
+
+    function showResults() {
+      document.getElementById('quiz-screen').classList.add('hidden');
+      document.getElementById('results-screen').classList.remove('hidden');
+      
+      const percentage = Math.round((score / quizData.length) * 100);
+      const circumference = 283;
+      const offset = circumference - (percentage / 100) * circumference;
+      
+      setTimeout(() => {
+        document.getElementById('score-ring').style.strokeDashoffset = offset;
+      }, 100);
+      
+      document.getElementById('final-score').textContent = `${percentage}%`;
+      document.getElementById('correct-count').textContent = score;
+      document.getElementById('incorrect-count').textContent = quizData.length - score;
+      
+      let title, message;
+      if (percentage === 100) {
+        title = "Perfect Score! 🎉";
+        message = "Outstanding! You've mastered regression analysis!";
+      } else if (percentage >= 80) {
+        title = "Excellent Work! 🌟";
+        message = "Great job! You have a strong understanding of regression concepts.";
+      } else if (percentage >= 60) {
+        title = "Good Effort! 👍";
+        message = "Nice work! Review the concepts you missed and try again.";
+      } else {
+        title = "Keep Learning! 📚";
+        message = "Don't give up! Review your regression analysis materials and try again.";
+      }
+      
+      document.getElementById('result-title').textContent = title;
+      document.getElementById('result-message').textContent = message;
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      answered = false;
+      
+      document.getElementById('results-screen').classList.add('hidden');
+      document.getElementById('start-screen').classList.remove('hidden');
+      document.getElementById('score-display').textContent = 'Score: 0';
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d719d9a35db693a',t:'MTc3MjYzNTAxMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
