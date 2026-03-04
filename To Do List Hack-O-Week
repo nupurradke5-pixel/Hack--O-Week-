@@ -1,327 +1,408 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { Plus, ListChecks, GraduationCap, Briefcase, BookOpen, Heart } from "lucide-react";
-import { TodoItem, Todo } from "./components/TodoItem";
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Routine Tracker</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'DM Sans', sans-serif; }
+    .task-item { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .task-item:hover { transform: translateX(4px); }
+    .task-item.completed .task-text { text-decoration: line-through; opacity: 0.6; }
+    .checkbox-custom { transition: all 0.2s ease; }
+    .checkbox-custom:hover { transform: scale(1.1); }
+    .category-btn { transition: all 0.2s ease; }
+    .category-btn:hover { transform: translateY(-2px); }
+    .add-btn { transition: all 0.2s ease; }
+    .add-btn:hover { transform: scale(1.02); box-shadow: 0 8px 25px -5px rgba(99, 102, 241, 0.4); }
+    .delete-btn { opacity: 0; transition: opacity 0.2s ease; }
+    .task-item:hover .delete-btn { opacity: 1; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-slide-in { animation: slideIn 0.3s ease-out; }
+    .progress-bar { transition: width 0.5s ease; }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full">
+  <div id="app-container" class="h-full overflow-auto" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%);">
+   <div class="w-full min-h-full p-6 md:p-8">
+    <div class="max-w-2xl mx-auto"><!-- Header -->
+     <header class="mb-8 text-center">
+      <h1 id="app-title" class="text-3xl md:text-4xl font-bold text-white mb-2">Daily Routine</h1>
+      <p id="greeting-text" class="text-indigo-200 text-lg">Stay organized, stay productive</p>
+      <div class="mt-4 flex items-center justify-center gap-3"><span id="date-display" class="text-indigo-300 text-sm"></span>
+      </div>
+     </header><!-- Progress Section -->
+     <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 mb-6">
+      <div class="flex items-center justify-between mb-2"><span class="text-indigo-200 text-sm font-medium">Today's Progress</span> <span id="progress-text" class="text-white font-semibold">0/0 completed</span>
+      </div>
+      <div class="h-3 bg-indigo-900/50 rounded-full overflow-hidden">
+       <div id="progress-bar" class="progress-bar h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full" style="width: 0%"></div>
+      </div>
+     </div><!-- Add Task Section -->
+     <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-5 mb-6">
+      <div class="flex flex-col gap-4"><input type="text" id="task-input" placeholder="What's on your routine today?" class="w-full px-4 py-3 bg-white/10 border border-indigo-400/30 rounded-xl text-white placeholder-indigo-300 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20">
+       <div class="flex flex-wrap gap-2"><button data-category="morning" class="category-btn px-4 py-2 rounded-lg text-sm font-medium bg-amber-500/20 text-amber-300 border border-amber-500/30 hover:bg-amber-500/30">🌅 Morning</button> <button data-category="work" class="category-btn px-4 py-2 rounded-lg text-sm font-medium bg-blue-500/20 text-blue-300 border border-blue-500/30 hover:bg-blue-500/30">💼 Work</button> <button data-category="health" class="category-btn px-4 py-2 rounded-lg text-sm font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30">💪 Health</button> <button data-category="evening" class="category-btn px-4 py-2 rounded-lg text-sm font-medium bg-purple-500/20 text-purple-300 border border-purple-500/30 hover:bg-purple-500/30">🌙 Evening</button>
+       </div><button id="add-btn" class="add-btn w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-xl shadow-lg"> <span id="add-btn-text">+ Add Task</span> </button>
+      </div>
+      <p id="limit-warning" class="hidden mt-3 text-amber-300 text-sm text-center">⚠️ Maximum 999 tasks reached. Please delete some tasks first.</p>
+     </div><!-- Filter Tabs -->
+     <div class="flex gap-2 mb-4 overflow-x-auto pb-2"><button data-filter="all" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white/20 text-white">All</button> <button data-filter="active" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white/5 text-indigo-300 hover:bg-white/10">Active</button> <button data-filter="completed" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-white/5 text-indigo-300 hover:bg-white/10">Completed</button>
+     </div><!-- Tasks List -->
+     <div id="tasks-container" class="space-y-3">
+      <div id="empty-state" class="text-center py-12">
+       <div class="text-5xl mb-4">
+        📝
+       </div>
+       <p class="text-indigo-300 text-lg">No tasks yet</p>
+       <p class="text-indigo-400 text-sm">Add your first routine task above</p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      app_title: 'Daily Routine',
+      greeting_text: 'Stay organized, stay productive',
+      background_color: '#1e1b4b',
+      surface_color: 'rgba(255,255,255,0.1)',
+      text_color: '#ffffff',
+      primary_action_color: '#6366f1',
+      secondary_action_color: '#a5b4fc',
+      font_family: 'DM Sans',
+      font_size: 16
+    };
 
-// Age-appropriate tasks for different user types
-const taskTemplates = {
-  "School Student": [
-    { text: "Complete homework assignments", category: "Study" },
-    { text: "Read for 30 minutes", category: "Study" },
-    { text: "Practice math problems", category: "Study" },
-    { text: "Organize school bag", category: "Preparation" },
-    { text: "Review class notes", category: "Study" },
-    { text: "Play outside for 1 hour", category: "Recreation" },
-  ],
-  "College Student": [
-    { text: "Attend morning lectures", category: "Academic" },
-    { text: "Work on group project", category: "Academic" },
-    { text: "Study for upcoming exams", category: "Study" },
-    { text: "Go to gym", category: "Health" },
-    { text: "Complete assignment deadline", category: "Academic" },
-    { text: "Part-time job shift", category: "Work" },
-  ],
-  "Office Worker": [
-    { text: "Morning team standup meeting", category: "Work" },
-    { text: "Review and respond to emails", category: "Work" },
-    { text: "Complete quarterly report", category: "Work" },
-    { text: "Client presentation at 2 PM", category: "Work" },
-    { text: "Lunch break walk", category: "Health" },
-    { text: "Professional development course", category: "Growth" },
-  ],
-  "Elderly": [
-    { text: "Morning walk in the park", category: "Health" },
-    { text: "Take daily medications", category: "Health" },
-    { text: "Call family members", category: "Social" },
-    { text: "Light gardening", category: "Activity" },
-    { text: "Read newspaper", category: "Leisure" },
-    { text: "Afternoon rest", category: "Health" },
-  ],
-};
+    let allTasks = [];
+    let selectedCategory = 'morning';
+    let currentFilter = 'all';
+    let currentRecordCount = 0;
 
-export default function App() {
-  const [selectedUserType, setSelectedUserType] = useState<keyof typeof taskTemplates>("School Student");
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [newTodo, setNewTodo] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("Study");
+    // Set current date
+    const dateDisplay = document.getElementById('date-display');
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    dateDisplay.textContent = new Date().toLocaleDateString('en-US', options);
 
-  // Load age-appropriate tasks
-  const loadUserTypeTasks = (userType: keyof typeof taskTemplates) => {
-    setSelectedUserType(userType);
-    const tasks = taskTemplates[userType];
-    const newTodos: Todo[] = tasks.map((task, index) => ({
-      id: `${Date.now()}-${index}`,
-      text: task.text,
-      completed: false,
-      category: task.category,
-      userType: userType,
-    }));
-    setTodos(newTodos);
-    
-    // Set first category as default
-    if (tasks.length > 0) {
-      setSelectedCategory(tasks[0].category);
-    }
-  };
+    // Category selection
+    document.querySelectorAll('[data-category]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-category]').forEach(b => {
+          b.classList.remove('ring-2', 'ring-white/50');
+        });
+        btn.classList.add('ring-2', 'ring-white/50');
+        selectedCategory = btn.dataset.category;
+      });
+    });
 
-  // Get unique categories for selected user type
-  const getCategories = () => {
-    const tasks = taskTemplates[selectedUserType];
-    return Array.from(new Set(tasks.map(t => t.category)));
-  };
+    // Select default category
+    document.querySelector('[data-category="morning"]').classList.add('ring-2', 'ring-white/50');
 
-  const handleAddTodo = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newTodo.trim()) {
-      const todo: Todo = {
-        id: Date.now().toString(),
-        text: newTodo.trim(),
+    // Filter selection
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          b.classList.remove('bg-white/20', 'text-white');
+          b.classList.add('bg-white/5', 'text-indigo-300');
+        });
+        btn.classList.remove('bg-white/5', 'text-indigo-300');
+        btn.classList.add('bg-white/20', 'text-white');
+        currentFilter = btn.dataset.filter;
+        renderTasks();
+      });
+    });
+
+    // Add task
+    const taskInput = document.getElementById('task-input');
+    const addBtn = document.getElementById('add-btn');
+    const addBtnText = document.getElementById('add-btn-text');
+    const limitWarning = document.getElementById('limit-warning');
+
+    async function addTask() {
+      const text = taskInput.value.trim();
+      if (!text) return;
+
+      if (currentRecordCount >= 999) {
+        limitWarning.classList.remove('hidden');
+        return;
+      }
+
+      addBtn.disabled = true;
+      addBtnText.textContent = 'Adding...';
+
+      const result = await window.dataSdk.create({
+        text: text,
         completed: false,
         category: selectedCategory,
-        userType: selectedUserType,
+        createdAt: new Date().toISOString()
+      });
+
+      addBtn.disabled = false;
+      addBtnText.textContent = '+ Add Task';
+
+      if (result.isOk) {
+        taskInput.value = '';
+        limitWarning.classList.add('hidden');
+      } else {
+        console.error('Failed to add task');
+      }
+    }
+
+    addBtn.addEventListener('click', addTask);
+    taskInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') addTask();
+    });
+
+    // Toggle task completion
+    async function toggleTask(task) {
+      const updatedTask = { ...task, completed: !task.completed };
+      const result = await window.dataSdk.update(updatedTask);
+      if (result.isError) {
+        console.error('Failed to update task');
+      }
+    }
+
+    // Delete task with inline confirmation
+    let pendingDelete = null;
+
+    function requestDelete(task) {
+      pendingDelete = task.__backendId;
+      renderTasks();
+    }
+
+    function cancelDelete() {
+      pendingDelete = null;
+      renderTasks();
+    }
+
+    async function confirmDelete(task) {
+      const result = await window.dataSdk.delete(task);
+      if (result.isOk) {
+        pendingDelete = null;
+      } else {
+        console.error('Failed to delete task');
+      }
+    }
+
+    // Render tasks
+    function renderTasks() {
+      const container = document.getElementById('tasks-container');
+      const emptyState = document.getElementById('empty-state');
+      
+      let filteredTasks = allTasks;
+      if (currentFilter === 'active') {
+        filteredTasks = allTasks.filter(t => !t.completed);
+      } else if (currentFilter === 'completed') {
+        filteredTasks = allTasks.filter(t => t.completed);
+      }
+
+      // Sort by creation date, newest first
+      filteredTasks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      // Update progress
+      const completed = allTasks.filter(t => t.completed).length;
+      const total = allTasks.length;
+      document.getElementById('progress-text').textContent = `${completed}/${total} completed`;
+      const percentage = total > 0 ? (completed / total) * 100 : 0;
+      document.getElementById('progress-bar').style.width = `${percentage}%`;
+
+      // Check limit
+      if (currentRecordCount >= 999) {
+        limitWarning.classList.remove('hidden');
+      } else {
+        limitWarning.classList.add('hidden');
+      }
+
+      if (filteredTasks.length === 0) {
+        emptyState.classList.remove('hidden');
+        // Remove task items but keep empty state
+        container.querySelectorAll('.task-item').forEach(el => el.remove());
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+
+      const existingItems = new Map(
+        [...container.querySelectorAll('.task-item')].map(el => [el.dataset.taskId, el])
+      );
+
+      const categoryStyles = {
+        morning: { bg: 'bg-amber-500/20', border: 'border-amber-500/30', icon: '🌅' },
+        work: { bg: 'bg-blue-500/20', border: 'border-blue-500/30', icon: '💼' },
+        health: { bg: 'bg-emerald-500/20', border: 'border-emerald-500/30', icon: '💪' },
+        evening: { bg: 'bg-purple-500/20', border: 'border-purple-500/30', icon: '🌙' }
       };
-      setTodos([...todos, todo]);
-      setNewTodo("");
+
+      filteredTasks.forEach(task => {
+        const style = categoryStyles[task.category] || categoryStyles.morning;
+        const isDeleting = pendingDelete === task.__backendId;
+
+        if (existingItems.has(task.__backendId)) {
+          const el = existingItems.get(task.__backendId);
+          updateTaskElement(el, task, style, isDeleting);
+          existingItems.delete(task.__backendId);
+        } else {
+          const el = createTaskElement(task, style, isDeleting);
+          container.appendChild(el);
+        }
+      });
+
+      existingItems.forEach(el => el.remove());
     }
-  };
 
-  const handleToggleTodo = (id: string) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
-  };
-
-  const handleDeleteTodo = (id: string) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
-  };
-
-  const completedCount = todos.filter((t) => t.completed).length;
-  const totalCount = todos.length;
-
-  // Get icon for user type
-  const getUserTypeIcon = (type: string) => {
-    switch (type) {
-      case "School Student":
-        return <BookOpen className="w-6 h-6 text-white" />;
-      case "College Student":
-        return <GraduationCap className="w-6 h-6 text-white" />;
-      case "Office Worker":
-        return <Briefcase className="w-6 h-6 text-white" />;
-      case "Elderly":
-        return <Heart className="w-6 h-6 text-white" />;
-      default:
-        return <ListChecks className="w-6 h-6 text-white" />;
+    function createTaskElement(task, style, isDeleting) {
+      const div = document.createElement('div');
+      div.className = `task-item animate-slide-in ${style.bg} ${style.border} border rounded-xl p-4 ${task.completed ? 'completed' : ''}`;
+      div.dataset.taskId = task.__backendId;
+      updateTaskElementContent(div, task, style, isDeleting);
+      return div;
     }
-  };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-rose-50 to-fuchsia-100 p-6 md:p-12">
-      <div className="max-w-4xl mx-auto">
-        {/* Header with 3D effect */}
-        <motion.div
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8 text-center"
-          style={{ perspective: "1000px" }}
-        >
-          <motion.div
-            style={{ transformStyle: "preserve-3d" }}
-            animate={{ rotateY: [0, 5, 0, -5, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <div className="inline-flex items-center gap-3 mb-2">
-              <div
-                className="p-3 bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl
-                shadow-[0_8px_16px_rgba(236,72,153,0.4)]"
-                style={{ transform: "translateZ(20px)" }}
-              >
-                <ListChecks className="w-8 h-8 text-white" />
-              </div>
-              <h1
-                className="text-5xl text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-rose-600"
-                style={{ transform: "translateZ(30px)" }}
-              >
-                Age-Based Tasks
-              </h1>
+    function updateTaskElement(el, task, style, isDeleting) {
+      el.className = `task-item ${style.bg} ${style.border} border rounded-xl p-4 ${task.completed ? 'completed' : ''}`;
+      updateTaskElementContent(el, task, style, isDeleting);
+    }
+
+    function updateTaskElementContent(el, task, style, isDeleting) {
+      el.innerHTML = `
+        <div class="flex items-center gap-4">
+          <button class="checkbox-custom w-6 h-6 rounded-full border-2 ${task.completed ? 'bg-emerald-500 border-emerald-500' : 'border-indigo-400'} flex items-center justify-center flex-shrink-0" onclick="toggleTaskById('${task.__backendId}')">
+            ${task.completed ? '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>' : ''}
+          </button>
+          <span class="text-xl">${style.icon}</span>
+          <span class="task-text text-white flex-1">${escapeHtml(task.text)}</span>
+          ${isDeleting ? `
+            <div class="flex gap-2">
+              <button class="px-3 py-1 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600" onclick="confirmDeleteById('${task.__backendId}')">Delete</button>
+              <button class="px-3 py-1 bg-white/20 text-white text-sm rounded-lg hover:bg-white/30" onclick="cancelDelete()">Cancel</button>
             </div>
-          </motion.div>
-          <p className="text-gray-600 text-lg">
-            Personalized daily routines for every age group
-          </p>
-        </motion.div>
+          ` : `
+            <button class="delete-btn p-2 text-indigo-300 hover:text-red-400 hover:bg-red-500/20 rounded-lg" onclick="requestDeleteById('${task.__backendId}')">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </button>
+          `}
+        </div>
+      `;
+    }
 
-        {/* User Type Selection */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="mb-8 bg-white rounded-2xl p-6 shadow-[0_12px_24px_rgba(236,72,153,0.15)]"
-          style={{ transformStyle: "preserve-3d" }}
-        >
-          <h2 className="text-xl mb-4 text-gray-700">Select Your Profile</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {(Object.keys(taskTemplates) as Array<keyof typeof taskTemplates>).map((userType) => (
-              <motion.button
-                key={userType}
-                whileHover={{ scale: 1.05, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => loadUserTypeTasks(userType)}
-                className={`p-4 rounded-xl transition-all duration-300 ${
-                  selectedUserType === userType
-                    ? "bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-[0_8px_16px_rgba(236,72,153,0.3)]"
-                    : "bg-pink-50 text-gray-700 hover:bg-pink-100"
-                }`}
-                style={{ transform: "translateZ(10px)" }}
-              >
-                <div className="flex flex-col items-center gap-2">
-                  <div className={`p-2 rounded-lg ${
-                    selectedUserType === userType ? "bg-white/20" : "bg-pink-200"
-                  }`}>
-                    {getUserTypeIcon(userType)}
-                  </div>
-                  <span className="text-sm font-medium">{userType}</span>
-                </div>
-              </motion.button>
-            ))}
-          </div>
-        </motion.div>
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
 
-        {/* Stats Card */}
-        {todos.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mb-8 bg-white rounded-2xl p-6 shadow-[0_12px_24px_rgba(236,72,153,0.15)]"
-            style={{ transformStyle: "preserve-3d" }}
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm">Progress Today</p>
-                <p className="text-3xl mt-1">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-600">
-                    {completedCount}
-                  </span>
-                  <span className="text-gray-400 text-2xl"> / {totalCount}</span>
-                </p>
-                <p className="text-sm text-gray-500 mt-1">{selectedUserType}</p>
-              </div>
-              <div className="relative w-24 h-24">
-                <svg className="transform -rotate-90 w-24 h-24">
-                  <circle
-                    cx="48"
-                    cy="48"
-                    r="40"
-                    stroke="currentColor"
-                    strokeWidth="8"
-                    fill="none"
-                    className="text-pink-100"
-                  />
-                  <circle
-                    cx="48"
-                    cy="48"
-                    r="40"
-                    stroke="url(#gradient)"
-                    strokeWidth="8"
-                    fill="none"
-                    strokeDasharray={`${
-                      (completedCount / totalCount) * 251.2
-                    } 251.2`}
-                    className="transition-all duration-500"
-                    strokeLinecap="round"
-                  />
-                  <defs>
-                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#ec4899" />
-                      <stop offset="100%" stopColor="#f43f5e" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-xl text-gray-700">
-                    {totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0}%
-                  </span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
+    // Global functions for onclick handlers
+    window.toggleTaskById = (id) => {
+      const task = allTasks.find(t => t.__backendId === id);
+      if (task) toggleTask(task);
+    };
 
-        {/* Add Todo Form */}
-        <motion.form
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          onSubmit={handleAddTodo}
-          className="mb-8 bg-white rounded-2xl p-6 shadow-[0_12px_24px_rgba(236,72,153,0.15)]"
-          style={{ transformStyle: "preserve-3d" }}
-        >
-          <div className="flex flex-col md:flex-row gap-4">
-            <input
-              type="text"
-              value={newTodo}
-              onChange={(e) => setNewTodo(e.target.value)}
-              placeholder="Add a custom task..."
-              className="flex-1 px-4 py-3 border-2 border-pink-200 rounded-xl focus:outline-none focus:border-pink-500
-              transition-all duration-300 shadow-inner"
-              style={{ transform: "translateZ(5px)" }}
-            />
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-3 border-2 border-pink-200 rounded-xl focus:outline-none focus:border-pink-500
-              transition-all duration-300 shadow-inner bg-white"
-              style={{ transform: "translateZ(5px)" }}
-            >
-              {getCategories().map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-            <motion.button
-              type="submit"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-xl
-              shadow-[0_8px_16px_rgba(236,72,153,0.3)] hover:shadow-[0_12px_24px_rgba(236,72,153,0.4)]
-              transition-all duration-300 flex items-center justify-center gap-2"
-              style={{ transform: "translateZ(10px)" }}
-            >
-              <Plus className="w-5 h-5" />
-              <span>Add Task</span>
-            </motion.button>
-          </div>
-        </motion.form>
+    window.requestDeleteById = (id) => {
+      const task = allTasks.find(t => t.__backendId === id);
+      if (task) requestDelete(task);
+    };
 
-        {/* Todo List */}
-        <motion.div
-          style={{ perspective: "1000px" }}
-          className="space-y-4"
-        >
-          <AnimatePresence>
-            {todos.map((todo) => (
-              <TodoItem
-                key={todo.id}
-                todo={todo}
-                onToggle={handleToggleTodo}
-                onDelete={handleDeleteTodo}
-              />
-            ))}
-          </AnimatePresence>
-        </motion.div>
+    window.confirmDeleteById = (id) => {
+      const task = allTasks.find(t => t.__backendId === id);
+      if (task) confirmDelete(task);
+    };
 
-        {todos.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-16 bg-white rounded-2xl shadow-[0_12px_24px_rgba(236,72,153,0.1)]"
-          >
-            <p className="text-pink-400 text-xl mb-2">Select a profile above to get started!</p>
-            <p className="text-gray-500">Age-appropriate tasks will be loaded automatically</p>
-          </motion.div>
-        )}
-      </div>
-    </div>
-  );
-}
+    window.cancelDelete = cancelDelete;
+
+    // Data handler
+    const dataHandler = {
+      onDataChanged(data) {
+        allTasks = data;
+        currentRecordCount = data.length;
+        renderTasks();
+      }
+    };
+
+    // Element SDK config change handler
+    async function onConfigChange(config) {
+      const title = config.app_title || defaultConfig.app_title;
+      const greeting = config.greeting_text || defaultConfig.greeting_text;
+      const bgColor = config.background_color || defaultConfig.background_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const fontFamily = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+
+      document.getElementById('app-title').textContent = title;
+      document.getElementById('greeting-text').textContent = greeting;
+      
+      document.getElementById('app-container').style.background = `linear-gradient(135deg, ${bgColor} 0%, ${adjustColor(bgColor, 30)} 50%, ${bgColor} 100%)`;
+      
+      document.getElementById('app-title').style.fontFamily = `${fontFamily}, sans-serif`;
+      document.getElementById('app-title').style.fontSize = `${fontSize * 2}px`;
+      document.getElementById('greeting-text').style.fontFamily = `${fontFamily}, sans-serif`;
+      document.getElementById('greeting-text').style.fontSize = `${fontSize * 1.125}px`;
+    }
+
+    function adjustColor(hex, amount) {
+      const num = parseInt(hex.replace('#', ''), 16);
+      const r = Math.min(255, Math.max(0, (num >> 16) + amount));
+      const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + amount));
+      const b = Math.min(255, Math.max(0, (num & 0x0000FF) + amount));
+      return '#' + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
+    }
+
+    // Initialize SDKs
+    (async () => {
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange,
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              {
+                get: () => config.background_color || defaultConfig.background_color,
+                set: (value) => { config.background_color = value; window.elementSdk.setConfig({ background_color: value }); }
+              },
+              {
+                get: () => config.surface_color || defaultConfig.surface_color,
+                set: (value) => { config.surface_color = value; window.elementSdk.setConfig({ surface_color: value }); }
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (value) => { config.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
+              },
+              {
+                get: () => config.primary_action_color || defaultConfig.primary_action_color,
+                set: (value) => { config.primary_action_color = value; window.elementSdk.setConfig({ primary_action_color: value }); }
+              },
+              {
+                get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+                set: (value) => { config.secondary_action_color = value; window.elementSdk.setConfig({ secondary_action_color: value }); }
+              }
+            ],
+            borderables: [],
+            fontEditable: {
+              get: () => config.font_family || defaultConfig.font_family,
+              set: (value) => { config.font_family = value; window.elementSdk.setConfig({ font_family: value }); }
+            },
+            fontSizeable: {
+              get: () => config.font_size || defaultConfig.font_size,
+              set: (value) => { config.font_size = value; window.elementSdk.setConfig({ font_size: value }); }
+            }
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['app_title', config.app_title || defaultConfig.app_title],
+            ['greeting_text', config.greeting_text || defaultConfig.greeting_text]
+          ])
+        });
+      }
+
+      if (window.dataSdk) {
+        await window.dataSdk.init(dataHandler);
+      }
+    })();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9d71abaa668d693a',t:'MTc3MjYzNTU4OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
